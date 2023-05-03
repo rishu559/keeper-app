@@ -3,32 +3,39 @@ import Header from "./Header";
 import Footer from "./Footer";
 import Note from "./Note";
 import CreateArea from "./CreateArea";
-// import notes from "../notes.js"
 
 function App() {
-  const [arr,setArr] = useState([]);
+  const [notes, setNotes] = useState([]);
 
-  function UpdateArr(item){
-    setArr((prev)=>{
-      return [...prev,item];
-    })
+  function addNote(newNote) {
+    setNotes(prevNotes => {
+      return [...prevNotes, newNote];
+    });
   }
 
-  function DeleteNode(id){
-    setArr(arr.filter((item,index)=>{
-      return index!==id;
-    }));
+  function deleteNote(id) {
+    setNotes(prevNotes => {
+      return prevNotes.filter((noteItem, index) => {
+        return index !== id;
+      });
+    });
   }
 
   return (
     <div>
       <Header />
-      <CreateArea UpdateArr={UpdateArr}/>
-      {/* <Note key={1} title="Note title" content="Note content" /> */}
-      {arr.map((item,index)=>{
-        return <Note key={index} id ={index} title={item.title} content={item.content} DeleteNode={DeleteNode} />
+      <CreateArea onAdd={addNote} />
+      {notes.map((noteItem, index) => {
+        return (
+          <Note
+            key={index}
+            id={index}
+            title={noteItem.title}
+            content={noteItem.content}
+            onDelete={deleteNote}
+          />
+        );
       })}
-
       <Footer />
     </div>
   );

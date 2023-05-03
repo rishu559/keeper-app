@@ -1,47 +1,65 @@
 import React, { useState } from "react";
-import notes from "../notes.js";
+import AddIcon from "@mui/icons-material/Add";
+import Fab from "@mui/material/Fab"
+import Zoom from "@mui/material/Zoom";
+
+
+
 function CreateArea(props) {
-  const [item, setItem] = useState({
+  const [note, setNote] = useState({
     title: "",
     content: "",
   });
 
-function refresh(){
-    setItem({
-        title: "",
-        content: "",
-      });
-}
-  function UpdateItem(event) {
-    event.preventDefault();
+  const [isExpanded,setExpanded] = useState(false);
+
+  function handleChange(event) {
     const { name, value } = event.target;
-    setItem((prev) => {
+
+    setNote((prevNote) => {
       return {
-        ...prev,
+        ...prevNote,
         [name]: value,
       };
     });
   }
-  
+
+  function submitNote(event) {
+    props.onAdd(note);
+    setNote({
+      title: "",
+      content: "",
+    });
+    event.preventDefault();
+  }
+
+  function expand(){
+    setExpanded(true);
+  }
   return (
     <div>
-      <form onSubmit={UpdateItem}>
-        <input name="title" placeholder="Title" onChange={UpdateItem} value = {item.title} />
+      <form className="create-note">
+        {isExpanded?<input
+          name="title"
+          onChange={handleChange}
+          value={note.title}
+          placeholder="Title"
+        />:null}
         <textarea
           name="content"
+          onClick={expand}
+          onChange={handleChange}
+          value={note.content}
           placeholder="Take a note..."
-          rows="3"
-          value = {item.content}
-          onChange={UpdateItem}
+          rows={isExpanded?"3":"1"}
         />
-        <button
-          onClick={() => {
-            props.UpdateArr(item);
-            refresh();
-          }}
-        >
-          Add
-        </button>
+        <Zoom in={isExpanded}>
+        <Fab onClick={submitNote}><AddIcon /></Fab>
+        </Zoom>
+
+        {/* <Fab color="primary" aria-label="add">
+          <AddIcon />
+        </Fab> */}
       </form>
     </div>
   );
